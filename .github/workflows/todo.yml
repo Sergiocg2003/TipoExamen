@@ -5,11 +5,11 @@ env:
   # FILES: compose.yml
 
 # GitHub Secrets
-# DOCKERHUB_USERNAME
-# DOCKERHUB_TOKEN
-# AWS_HOSTNAME
-# AWS_USERNAME
-# AWS_PRIVATEKEY
+# DH_USUARIO
+# DH_TOKEN
+# AMZ_IP
+# AMZ_USUARIO
+# AMZ_CLAVE
 
 on:
   push:
@@ -46,14 +46,14 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DH_USUARIO }}
+          password: ${{ secrets.DH_TOKEN }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: ${{ secrets.DH_USUARIO }}/${{ env.IMAGE_NAME }}
 
   deploy:
     name: deploy en AWS
@@ -63,12 +63,12 @@ jobs:
       - name: multiple command
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.AWS_HOSTNAME }}
-          username: ${{ secrets.AWS_USERNAME }}
-          key: ${{ secrets.AWS_PRIVATEKEY }}
+          host: ${{ secrets.AMZ_IP }}
+          username: ${{ secrets.AMZ_USUARIO }}
+          key: ${{ secrets.AMZ_CLAVE }}
           port: 22 # ${{ secrets.PORT }}
           script: |
             sleep 30
             docker rm -f web1
-            docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-            docker run -d -p 80:5000 --name web1 ${{secrets.DOCKERHUB_USERNAME}}/${{env.IMAGE_NAME}}
+            docker rmi ${{ secrets.DH_USUARIO }}/${{ env.IMAGE_NAME }}
+            docker run -d -p 80:5000 --name web1 ${{secrets.DH_USUARISO}}/${{env.IMAGE_NAME}}
